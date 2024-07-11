@@ -38,13 +38,13 @@ class CampingDetailView(APIView):
 
 class CampingPatchView(generics.UpdateAPIView):
     """ View that edit some camping's fields"""
-    queryset = Camping.objects.filter(status='NW')  # Фильтрация записей по статусу "New"
+    queryset = Camping.objects.filter(status='NW')
     serializer_class = CampingPatchSerializer
 
     def update(self, request, *args, **kwargs):
         """Method for path some fields"""
         instance = self.get_object()
-        if instance.status != 'NW':  # Проверка статуса записи
+        if instance.status != 'NW':
             return Response({"state": 0, "message": "Record status is not 'New'"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -52,3 +52,15 @@ class CampingPatchView(generics.UpdateAPIView):
         self.perform_update(serializer)
 
         return Response({"state": 1}, status=status.HTTP_200_OK)
+
+
+class CampingListView(generics.ListAPIView):
+    """View that show all data from user with some email """
+    serializer_class = CampingSerializer
+
+    def get_queryset(self):
+        """Method to get queryset"""
+        email = self.request.query_params.get('user__email', None)
+        if email is not None:
+            return Camping.objects.filter(user__email=email)
+        return Camping.objects.none()
