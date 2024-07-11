@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from .models import Camping
 from .serializers import CampingSerializer
 
 
@@ -19,3 +20,16 @@ class SubmitData(APIView):
             return Response(camping_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(camping_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CampingDetailView(APIView):
+    """Сlass that show camping details"""
+
+    def get(self, request, id):
+        """pass"""
+        camping = Camping.objects.filter(id=id).first()
+        if camping:
+            serializer = CampingSerializer(camping)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "Camping not found"}, status=status.HTTP_404_NOT_FOUND)
