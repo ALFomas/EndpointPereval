@@ -60,6 +60,15 @@ class CampingSerializer(serializers.ModelSerializer):
         return camping_instance
 
 
+class CampingPatchSerializer(serializers.ModelSerializer):
+    """ Serializer for edit some fields in Camping """
+
+    class Meta:
+        """Meta class"""
+        model = Camping
+        fields = ['coord', 'level', 'beauty_title', 'title', 'other_titles', 'connect']
+
+
 class ImageSerializer(serializers.ModelSerializer):
     """ Serializer for User Image"""
 
