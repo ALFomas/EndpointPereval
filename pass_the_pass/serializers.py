@@ -40,6 +40,25 @@ class CampingSerializer(serializers.ModelSerializer):
         model = Camping
         fields = '__all__'
 
+    def create(self, validated_data):
+        """serializer create method """
+        user_data = validated_data.pop('user')
+        coord_data = validated_data.pop('coord')
+        level_data = validated_data.pop('level')
+
+        user_instance = User.objects.create(**user_data)
+        coord_instance = Coord.objects.create(**coord_data)
+        level_instance = Level.objects.create(**level_data)
+
+        camping_instance = Camping.objects.create(
+            user=user_instance,
+            coord=coord_instance,
+            level=level_instance,
+            **validated_data
+        )
+
+        return camping_instance
+
 
 class ImageSerializer(serializers.ModelSerializer):
     """ Serializer for User Image"""
