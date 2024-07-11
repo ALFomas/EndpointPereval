@@ -2,7 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Camping
-from .serializers import CampingSerializer
+from .serializers import CampingSerializer, CampingPatchSerializer
+from rest_framework import generics
 
 
 class SubmitData(APIView):
@@ -37,12 +38,13 @@ class CampingDetailView(APIView):
 
 class CampingPatchView(generics.UpdateAPIView):
     """ View that edit some camping's fields"""
-    queryset = Camping.objects.filter(status='NW')
+    queryset = Camping.objects.filter(status='NW')  # Фильтрация записей по статусу "New"
     serializer_class = CampingPatchSerializer
 
     def update(self, request, *args, **kwargs):
         """Method for path some fields"""
-        if instance.status != 'NW':
+        instance = self.get_object()
+        if instance.status != 'NW':  # Проверка статуса записи
             return Response({"state": 0, "message": "Record status is not 'New'"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.get_serializer(instance, data=request.data, partial=True)
