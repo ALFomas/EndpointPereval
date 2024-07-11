@@ -58,6 +58,28 @@ class Camping(models.Model):
     add_time = models.DateTimeField(auto_now_add=True, null=True)
     status = models.CharField(max_length=2, choices=STATUS, default=new)
 
+    def add_user_data(self, email, surname, name, patronymic, phone):
+        """Method to add user"""
+        new_user = User(email=email, surname=surname, name=name, patronymic=patronymic, phone=phone)
+        new_user.save()
+        self.user = new_user
+
+    def add_coord_data(self, latitude, longitude, height):
+        """Method to add coord"""
+        new_coord = Coord(latitude=latitude, longitude=longitude, height=height)
+        new_coord.save()
+        self.coord = new_coord
+
+    def add_level_data(self, season, difficulty):
+        """Method to add level"""
+        new_level = Level(season=season, difficulty=difficulty)
+        new_level.save()
+        self.level = new_level
+
+    def submit_to_db(self):
+        """Method to add all"""
+        self.save()
+
     def __str__(self):
         """Method for representation"""
         return f"Camping: {self.camping.title} - {self.camping.other_titles} "
